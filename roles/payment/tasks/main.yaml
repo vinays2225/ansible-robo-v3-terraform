@@ -1,0 +1,18 @@
+- name: Application setup
+  include_role:
+    name: common
+    tasks_from: app-setup.yaml
+
+- name: Install Pythion
+  include_role:
+    name: common
+    tasks_from: python.yaml
+- name: systemd service setup
+  include_role:
+    name: common
+    tasks_from: systemd-setup.yaml
+
+- name: Restart and enable payment service
+  include_role:
+    name: common
+    tasks_from: restart.yaml    

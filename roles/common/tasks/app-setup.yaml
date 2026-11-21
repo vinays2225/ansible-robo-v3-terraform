@@ -1,0 +1,34 @@
+- name: create system user
+  user:
+    name: roboshop
+    system: yes
+    create_home: no
+    home: /app
+    shell: /sbin/nologin
+    comment: "roboshop system user"  
+
+- name: Remove app dir
+  file:
+    path: /app
+    state: absent 
+
+- name: Remove old code dir
+  file:
+    path: "/tmp/{{ component }}.zip"
+    state: absent   
+
+- name: create app dir
+  file:
+    path: /app
+    state: directory
+
+- name: Download code
+  get_url:
+    url: "https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/{{ component }}-v4.zip"
+    dest: "/tmp/{{ component }}.zip" 
+
+- name: Unzip code
+  unarchive:
+    src: "/tmp/{{ component }}.zip"
+    dest: /app 
+    remote_src: yes #. if no ansible checking in his server location

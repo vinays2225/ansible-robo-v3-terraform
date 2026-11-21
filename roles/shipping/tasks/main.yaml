@@ -1,0 +1,48 @@
+- name: appsetup
+  include_role:
+    name: common
+    tasks_from: app-setup.yaml
+
+
+- name: Install maven and java25
+  include_role:
+    name: common
+    tasks_from: java.yaml
+
+
+
+
+- name: Systemd setup
+  include_role:
+    name: common
+    tasks_from: systemd-setup.yaml 
+
+- name: check cities data exist or not
+  command: mysql -h "{{ mysql_host }}" -u root -p{{ mysql_root_password }} -N -B -e "SELECT COUNT(*) FROM cities.cities;"
+  register: cities_count
+  ignore_errors: true
+  tags:
+  - mysql
+
+- name: print cities_count
+  debug:
+    msg: "{{ cities_count }}"
+  tags:
+  - mysql
+
+- name: Load master-data 
+  shell: mysql -h {{mysql_host}} -uroot -pRoboShop@1 < /app/db/master-data.sql 
+  when: cities_count.rc != 0 or cities_count.stdout | int == 0     
+  tags:
+  - mysql
+
+- name: Load app-user
+  shell: mysql -h {{mysql_host}} -uroot -pRoboShop@1 < /app/db/app-user.sql
+  tags:
+  - mysql
+
+
+- name: Restart and enable shipping service
+  include_role:
+    name: common
+    tasks_from: restart.yaml  

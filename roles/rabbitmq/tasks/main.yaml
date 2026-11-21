@@ -1,0 +1,39 @@
+- name: Copy repo
+  copy:
+    src: rabbitmq.repo
+    dest: /etc/yum.repos.d/rabbitmq.repo
+
+- name: install rabbitmq server
+  dnf:
+    name:
+    - erlang 
+    - rabbitmq-server
+    state: present
+
+- name: Start service and enabled
+  service:
+    name: rabbitmq-server
+    state: started
+    enabled: yes  
+
+- name: create rabbitmq user
+  community.rabbitmq.rabbitmq_user:
+    user: "{{ rabbitmq_user }}"
+    password: "{{ rabbitmq_password }}"
+    tags: "administrator"
+    vhost: /
+    configure_priv: .*
+    read_priv: .*
+    write_priv: .*
+    state: present   
+
+- name: Enables the rabbitmq_management plugin
+  community.rabbitmq.rabbitmq_plugin:
+    names: rabbitmq_management
+    state: enabled    
+
+
+- name: Re-Start service and enabled
+  service:
+    name: rabbitmq-server
+    state: restarted 

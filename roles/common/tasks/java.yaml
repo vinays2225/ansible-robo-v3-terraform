@@ -1,0 +1,20 @@
+- name: enable maven 3.9
+  command: dnf module enable maven:3.9 -y
+
+- name: Install Maven, Java 25, and MySQL client
+  ansible.builtin.dnf:
+    name:
+      - maven
+      - maven-openjdk25
+      - mysql
+    state: present
+
+- name: Install dependencies and package application
+  ansible.builtin.command:
+    cmd: mvn clean package
+    chdir: /app
+
+- name: Move and rename {{ component }} jar
+  ansible.builtin.command:
+    cmd: mv /app/target/{{ component }}.jar /app/{{ component }}.jar
+    creates: /app/{{ component }}.jar

@@ -1,0 +1,56 @@
+- name: disable nginx
+  command: dnf module disable nginx -y
+
+- name: enable 1.2x 
+  command: dnf module enable nginx:1.26 -y
+
+- name: install nginx
+  dnf:
+    name:
+    - nginx
+    state: present
+
+- name: Copy roboshop service
+  template:
+    src: roboshop.conf.j2
+    dest: /etc/nginx/default.d/roboshop.conf    
+
+- name: start and enable service
+  service:
+    name: nginx
+    state: started
+    enabled: yes  
+
+- name: Delete and recreate html dir
+  block:
+    - name: Remove the Nginx HTML directory and all its contents
+      file:
+        path: /usr/share/nginx/html
+        state: absent
+      become: true
+
+    - name: Recreate the empty Nginx HTML directory
+      file:
+        path: /usr/share/nginx/html
+        state: directory
+        mode: '0755'
+        owner: root
+        group: root
+      become: true 
+
+                  
+- name: Download code
+  get_url:
+    url: https://raw.githubusercontent.com/daws-92s/roboshop-documentation/refs/heads/main/artifacts/{{ component }}-v4.zip
+    dest: /tmp/{{ component }}.zip 
+
+- name: Unzip code
+  unarchive:
+    src: /tmp/{{ component }}.zip
+    dest: /usr/share/nginx/html 
+    remote_src: yes #. if no ansible checking in his server location
+  
+- name: restart service
+  service:
+    name: nginx
+    state: restarted    

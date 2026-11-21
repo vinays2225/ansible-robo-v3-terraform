@@ -1,0 +1,22 @@
+
+#ansible_user: "{{ lookup('amazon.aws.aws_secret', 'dev/roboshop/ec2') | from_json | json_query('ansible_user') }}"
+#ansible_password: "{{ lookup('amazon.aws.aws_secret', 'dev/roboshop/ec2') | from_json | json_query('ansible_password') }}"
+#ansible_user: "{{ lookup('amazon.aws.aws_secret', 'dev/roboshop/ec2') | from_json | json_query('ansible_user') }}"
+#ansible_password: "{{ lookup('amazon.aws.aws_secret', 'dev/roboshop/ec2') | from_json | json_query('ansible_password') }}"
+
+# mongodb_host: mongodb.yanvisol.online
+# redis_host: redis.yanvisol.online
+# mysql_host: mysql.yanvisol.online
+# rabbitmq_host: rabbitmq.yanvisol.online
+# catalogue_host: catalogue.yanvisol.online
+# user_host: user.yanvisol.online
+# cart_host: cart.yanvisol.online
+# shipping_host: shipping.yanvisol.online
+# payment_host: payment.yanvisol.online
+
+
+# mysql_root_password: "{{ vault_mysql_root_password }}"
+# rabbitmq_user: "{{ vault_rabbitmq_user }}"
+# rabbitmq_password: "{{ vault_rabbitmq_password }}"
+
+mysql_root_password: "RoboShop@1"
