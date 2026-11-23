@@ -10,6 +10,14 @@
     - rabbitmq-server
     state: present
 
+- name: Install boto3 and botocore via pip in rabbitmq
+  ansible.builtin.pip:
+    name:
+      - boto3
+      - botocore
+    state: present
+    executable: pip3.9  
+
 - name: Start service and enabled
   service:
     name: rabbitmq-server

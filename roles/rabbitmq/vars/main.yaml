@@ -1,0 +1,2 @@
+rabbitmq_user: "{{ lookup('amazon.aws.aws_ssm', '/roboshop/{{ env }}/rabbitmq_user', decrypt=true, region='us-east-1') }}"
+rabbitmq_password: "{{ lookup('amazon.aws.aws_ssm', '/roboshop/{{ env }}/rabbitmq_password', decrypt=true, region='us-east-1') }}"
